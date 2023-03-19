@@ -14,9 +14,11 @@ sair do tabuleiro, a mesma retorna ao jogador.
 ## 2) Funcionalidades Básicas
 - [x] Controle de turno, com definição de quem inicia a partida
 - [x] Movimentação de peças do tabuleiro
-- [ ] Desistência
+- [x] Desistência
 - [x] Chat para comunicação durante toda a partida
-## 3) Implementação ![alt](https://pyro4.readthedocs.io/en/stable/_images/pyro-large.png?f=webp&w=10)
+## 3) Implementação
+![alt](https://www.pygame.org/docs/_static/pygame_tiny.png?f=webp&w=12) 
+![alt](https://pyro4.readthedocs.io/en/stable/_images/pyro-large.png?f=webp&w=10)
 - Esse jogo foi escrito em Python com a biblioteca Pyro4 <http://pypi.python.org/pypi/Pyro4/> e a biblioteca Pygame <https://www.pygame.org> 
 - Pyro4 é uma biblioteca que permite construir aplicações nas quais os objetos podem se comunicar entre si pela rede, com mínimo esforço de programação.
 - Pygame é uma biblioteca de jogos multiplataforma feita para ser utilizada em conjunto com a linguagem de programação Python
@@ -32,4 +34,4 @@ sair do tabuleiro, a mesma retorna ao jogador.
 - Após a uma vitória o jogo pode ser reiniciado pressionando a tecla ESC por qualquer um dos jogadores.
 - A tecla F12 ativa e desativa o chat.
 ![Chat](imgs/chat.gif)
-- O jogador cliente ao fechar a janela, o servidor é avisado da desistência e inicia uma nova conexão.
+- Um player pode desistir ao fechar a janela, seu adversário é avisado da desistência e espera por uma nova conexão.

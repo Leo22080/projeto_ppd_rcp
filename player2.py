@@ -22,8 +22,12 @@ def create_thread(target):
     thread.daemon = True 
     thread.start()
 
+
 def iniciando_player():
-    daemon = Pyro4.Daemon() # criar o Pyro daemon
+    ''' cria o Daemon que é a parte do Pyro que escuta as chamadas de método remoto, as despacha
+     para os objetos reais apropriados e retorna os resultados para o chamador.'''
+
+    daemon = Pyro4.Daemon()
     uri = daemon.register(player_2) # registre a classe Player como objeto Pyro
     ns.register("gekitai.player_2", uri) # registrar o objeto com um nome no servidor de nomes
 
@@ -31,19 +35,19 @@ def iniciando_player():
     daemon.requestLoop() # iniciar o loop de eventos do servidor para aguardar
     #esperando 
 
-create_thread(iniciando_player)
 
+create_thread(iniciando_player)
 
 player_2.turn = False
 playing = 'True'
-connection_established = False
+player_2.connection_established = False
 
 try:
     uri = uri = ns.lookup('gekitai.player_1')
     player_1 = Pyro4.Proxy(uri)
-    connection_established = True
+    player_2.connection_established = True
     player_1.turn = True
-except Pyro4.errors.NamingError:
+except Pyro4.errors.NamingError as error:
     pass
 
 deve_continuar = True
@@ -59,7 +63,7 @@ while deve_continuar:
             deve_continuar = False
 
         # quando o botao esquerdo do mouse é pressionado
-        if evento.type == pygame.MOUSEBUTTONDOWN and connection_established:
+        if evento.type == pygame.MOUSEBUTTONDOWN and player_2.connection_established:
             if pygame.mouse.get_pressed()[0]:
                 if player_2.turn and not fimdeJogo and not player_2.chatOn:
                     rect = tabuleiro.get_rect().move(TABULEIROORIGEM)
@@ -74,7 +78,7 @@ while deve_continuar:
                             player_1.jogar('2', (x, y))
                             player_1.turn = True
                                                         
-        if evento.type == pygame.KEYDOWN and connection_established:
+        if evento.type == pygame.KEYDOWN and player_2.connection_established:
             if evento.key == pygame.K_ESCAPE and fimdeJogo:
                 player_2.iniciarJogo()
                 player_1.iniciarJogo()
@@ -119,14 +123,14 @@ while deve_continuar:
     if fimdeJogo:
         playing = 'False'
 
-    if player_1.chatOn:
+    if player_2.chatOn:
         player_2.chat.drawChat(janela)
 
-    if not connection_established:
+    if not player_2.connection_established:
         try:
             uri = ns.lookup('gekitai.player_1')
-            player_2 = Pyro4.Proxy(uri)
-            connection_established = True
+            player_1 = Pyro4.Proxy(uri)
+            player_2.connection_established = True
         except Pyro4.errors.NamingError:
             pass
         
@@ -135,8 +139,12 @@ while deve_continuar:
     pygame.display.update()
 
 # Encerrando módulos de Pygame
-player_1.turn = False
-player_1.iniciarJogo()
-player_1.chatOn = False
+try:
+    player_1.turn = False
+    player_1.iniciarJogo()
+    player_1.chatOn = False
+    player_1.connection_established = False
+except:
+    pass
 ns.remove('gekitai.player_2')
 pygame.quit()

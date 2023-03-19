@@ -22,8 +22,12 @@ def create_thread(target):
     thread.daemon = True 
     thread.start()
 
+
 def iniciando_player():
-    daemon = Pyro4.Daemon() # criar o Pyro daemon
+    ''' cria o Daemon que é a parte do Pyro que escuta as chamadas de método remoto, as despacha
+     para os objetos reais apropriados e retorna os resultados para o chamador.'''
+
+    daemon = Pyro4.Daemon()
     uri = daemon.register(player_1) # registre a classe Player como objeto Pyro
     ns.register("gekitai.player_1", uri) # registrar o objeto com um nome no servidor de nomes
 
@@ -36,12 +40,12 @@ create_thread(iniciando_player)
 
 player_1.turn = False
 playing = 'True'
-connection_established = False
+player_1.connection_established = False
 
 try:
     uri = ns.lookup('gekitai.player_2')
-    player_2 = Pyro4.Proxy(uri)
-    connection_established = True
+    player_2 = Pyro4.Proxy(uri) #
+    player_1.connection_established = True
     player_2.turn = True
 except Pyro4.errors.NamingError as error:
     pass
@@ -59,7 +63,7 @@ while deve_continuar:
             deve_continuar = False
 
         # quando o botao esquerdo do mouse é pressionado
-        if evento.type == pygame.MOUSEBUTTONDOWN and connection_established:
+        if evento.type == pygame.MOUSEBUTTONDOWN and player_1.connection_established:
             if pygame.mouse.get_pressed()[0]:
                 if player_1.turn and not fimdeJogo and not player_1.chatOn:
                     rect = tabuleiro.get_rect().move(TABULEIROORIGEM)
@@ -74,7 +78,7 @@ while deve_continuar:
                             player_2.jogar('1', (x, y))
                             player_2.turn = True
                                                         
-        if evento.type == pygame.KEYDOWN and connection_established:
+        if evento.type == pygame.KEYDOWN and player_1.connection_established:
             if evento.key == pygame.K_ESCAPE and fimdeJogo:
                 player_1.iniciarJogo()
                 player_2.iniciarJogo()
@@ -84,7 +88,6 @@ while deve_continuar:
             if evento.key == pygame.K_F12:
                 player_1.chatOn = not player_1.chatOn
                 player_2.chatOn = not player_2.chatOn
-                print(player_1.chatOn)
 
             if player_1.chatOn:
                 chat = player_1.chat
@@ -123,21 +126,26 @@ while deve_continuar:
     if player_1.chatOn:
         player_1.chat.drawChat(janela)
 
-    if not connection_established:
+    if not player_1.connection_established:
         try:
             uri = ns.lookup('gekitai.player_2')
             player_2 = Pyro4.Proxy(uri)
-            connection_established = True
+            player_1.connection_established = True
         except Pyro4.errors.NamingError:
             pass
         
-            
+
+
     # mostrando na tela tudo o que foi desenhado
     pygame.display.update()
 
 # Encerrando módulos de Pygame
-player_2.turn = False
-player_2.iniciarJogo()
-player_2.chatOn = False
-ns.remove('gekitai.player_1')
+try:
+    player_2.turn = False
+    player_2.iniciarJogo()
+    player_2.chatOn = False
+    player_2.connection_established = False
+except:
+    pass
+ns.remove('gekitai.player_1') #apaga a referência do objeto do servidor de nomes
 pygame.quit()

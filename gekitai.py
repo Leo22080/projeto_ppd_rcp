@@ -318,6 +318,7 @@ class Player:
         self.chat = Chat()
         self._turn = False
         self._chatOn = False
+        self._connection_established = False
 
     @property
     def turn(self):
@@ -326,6 +327,14 @@ class Player:
     @property
     def chatOn(self):
         return self._chatOn
+
+    @property
+    def connection_established(self):
+        return self._connection_established
+
+    @connection_established.setter
+    def connection_established(self, conn):
+        self._connection_established = conn
 
     @turn.setter
     def turn(self, turn):
