@@ -29,12 +29,15 @@ for i in range(6):
 
 def menu(surface):
 
-    font = pygame.font.Font(pygame.font.get_default_font(), 20)
+    font = pygame.font.Font(pygame.font.get_default_font(), 18)
     texto = font.render('ESC - Reiniciar', True, (0, 0, 0), (192, 192, 192))
-    surface.blit(texto, [5, 575])
-    font = pygame.font.Font(pygame.font.get_default_font(), 20)
+    surface.blit(texto, [5, 579])
+    font = pygame.font.Font(pygame.font.get_default_font(), 18)
     texto = font.render('F12 - Chatbox', True, (0, 0, 0), (192, 192, 192))
-    surface.blit(texto, [655, 575])
+    surface.blit(texto, [325, 579])
+    font = pygame.font.Font(pygame.font.get_default_font(), 18)
+    texto = font.render('Delete - Desistir', True, (0, 0, 0), (192, 192, 192))
+    surface.blit(texto, [655, 579])
 
 
 class Linha:

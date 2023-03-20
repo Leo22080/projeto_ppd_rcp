@@ -11,7 +11,7 @@ ns = Pyro4.locateNS() # procura o servidor de nomes
 
 # Criando uma janela
 janela = pygame.display.set_mode((LARGURAJANELA, ALTURAJANELA))
-pygame.display.set_caption('Gekitai')
+pygame.display.set_caption('Gekitai - Player 2')
 
 
 #threading
@@ -39,7 +39,6 @@ def iniciando_player():
 create_thread(iniciando_player)
 
 player_2.turn = False
-playing = 'True'
 player_2.connection_established = False
 
 try:
@@ -79,11 +78,13 @@ while deve_continuar:
                             player_1.turn = True
                                                         
         if evento.type == pygame.KEYDOWN and player_2.connection_established:
+            if evento.key == pygame.K_DELETE:
+                deve_continuar = False
+            
             if evento.key == pygame.K_ESCAPE and fimdeJogo:
                 player_2.iniciarJogo()
                 player_1.iniciarJogo()
                 fimdeJogo = False
-                playing = 'True'
                 
             if evento.key == pygame.K_F12:
                 player_1.chatOn = not player_1.chatOn
@@ -120,8 +121,6 @@ while deve_continuar:
         peca.atualizar()
 
     fimdeJogo = player_2.verificarJogada(janela)
-    if fimdeJogo:
-        playing = 'False'
 
     if player_2.chatOn:
         player_2.chat.drawChat(janela)
