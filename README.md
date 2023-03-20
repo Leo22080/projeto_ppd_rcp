@@ -34,4 +34,4 @@ sair do tabuleiro, a mesma retorna ao jogador.
 - Após a uma vitória o jogo pode ser reiniciado pressionando a tecla ESC por qualquer um dos jogadores.
 - A tecla F12 ativa e desativa o chat.
 ![Chat](imgs/chat.gif)
-- Um player pode desistir ao fechar a janela, seu adversário é avisado da desistência e espera por uma nova conexão.
+- Um player pode desistir ao fechar a janela ou pressionando a tecla delete, seu adversário é avisado da desistência e espera por uma nova conexão.
